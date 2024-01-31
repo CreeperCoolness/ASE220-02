@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+    <div class="container mt-5" id="animalCardsContainer"></div>
+
+    <script>
+        
+        var animals = [
+            { name: "Baxter", image: "images/baxter.jpg", gender: "Male", age: "5 Years", type: "Dog", breed: "Beagle", index: 1 },
+            { name: "Luna", image: "images/luna.jpg", gender: "Female", age: "3 Years", type: "Cat", breed: "Maine Coon", index: 2 },
+            { name: "Sandy", image: "images/sandy.jpg", gender: "Female", age: "7 Years", type: "Dog", breed: "Golden Retriever", index: 3 },
+			{ name: "Oliver", image: "images/oliver.jpg", gender: "Male", age: "2 Years", type: "Cat", breed: "Siamese", index: 4 },
+			{ name: "Max", image: "images/max.jpg", gender: "Male", age: "4 Years", type: "Dog", breed: "Labrador Retriever", index: 5 },
+			{ name: "Daisy", image: "images/daisy.jpg", gender: "Female", age: "6 Years", type: "Cat", breed: "Persian", index: 6 },
+			{ name: "Charlie", image: "images/charlie.jpg", gender: "Male", age: "3 Years", type: "Dog", breed: "Dachshund", index: 7 },
+			{ name: "George", image: "images/george.jpg", gender: "Male", age: "4 Years", type: "Cat", breed: "British Shorthair", index: 8 },
+			{ name: "Bella", image: "images/bella.jpg", gender: "Female", age: "6 Years", type: "Dog", breed: "Boxer", index: 9 },
+			{ name: "Sophie", image: "images/sophie.jpg", gender: "Female", age: "1 Year", type: "Cat", breed: "Ragdoll", index: 10 },
+        ];
+
+        
+        function generateCard(animal) {
+            return `
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img src="${animal.image}" class="card-img-top" alt="picture of ${animal.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${animal.name}</h5>
+                            <p class="card-text">
+                                <span class="badge bg-info">${animal.gender}</span><span class="badge bg-info">${animal.age}</span><br>
+                                Type: ${animal.type}<br>Breed: ${animal.breed}<br>
+                            </p>
+                            <a href="detail.html?index=${animal.index}" class="btn btn-primary">Learn more</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+       
+        function generateAnimalCards() {
+            var container = document.getElementById("animalCardsContainer");
+            animals.forEach(function(animal) {
+                var animalCardHTML = generateCard(animal);
+                container.innerHTML += animalCardHTML;
+            });
+        }
+
+        
+        window.onload = generateAnimalCards;
+    </script>
+</body>
+</html>
