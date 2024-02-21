@@ -1,25 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</head>
-<body>
-
-
-    <div class="container mt-5" id="animalCardsContainer"></div>
+	<head>
+		<meta charset="UTF-8">
+		<title>Home</title>
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div class="container mt-5" id="animalCardsContainer">
+			<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#addPetModal" name="add" >Add Pet</button>
+			<ul id="list" class="list-group"></ul>
+		</div>
+		<div class="modal fade" id="addPetModal" tabindex="-1" role="dialog" aria-labelledby="addPetModal" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Pet Info</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Name: <textarea class="form-control" id="bname"></textarea></p>
+						<p>Gender: <textarea class="form-control" id="bgender"></textarea></p>
+						<p>Age: <textarea class="form-control" id="bage"></textarea></p>
+						<p>Type: <textarea class="form-control" id="btype"></textarea></p>
+						<p>Breed: <textarea class="form-control" id="bbreed"></textarea></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button id="btn-pet-add" type="button" class="btn btn-primary">Add Pet</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	<div  class="container" id="actions"></div>
 
     <script>
-        var start = 0;
+		var start = 0;
 		var end = 3;
-        var animals = [
-            { name: "Baxter", image: "images/baxter.jpg", gender: "Male", age: "5 Years", type: "Dog", breed: "Beagle", index: 1 },
+		var animals = [
+			{ name: "Baxter", image: "images/baxter.jpg", gender: "Male", age: "5 Years", type: "Dog", breed: "Beagle", index: 1 },
             { name: "Luna", image: "images/luna.jpg", gender: "Female", age: "3 Years", type: "Cat", breed: "Maine Coon", index: 2 },
             { name: "Sandy", image: "images/sandy.jpg", gender: "Female", age: "7 Years", type: "Dog", breed: "Golden Retriever", index: 3 },
 			{ name: "Oliver", image: "images/oliver.jpg", gender: "Male", age: "2 Years", type: "Cat", breed: "Siamese", index: 4 },
@@ -49,19 +73,16 @@
 			{ name: "Cleo", image: "images/cleo.jpg", gender: "Female", age: "2 Years", type: "Cat", breed: "Sphynx", index: 28 },
 			{ name: "Simba", image: "images/simba.jpg", gender: "Male", age: "2.5 Years", type: "Cat", breed: "Abyssinian", index: 29 },
 			{ name: "Stella", image: "images/Stella.jpg", gender: "Female", age: "3 Years", type: "Cat", breed: "Turkish Angora", index: 30 },
+		];
 
-        ];
-
-        
-        function generateCard(animal) {
-            return `
-                <div class="col-sm">
-                    <div class="card" style="width: 18rem;">
-                        <img src="${animal.image}" class="card-img-top" alt="picture of ${animal.name}" data-toggle="modal" data-target="#exampleModal" onclick="lol(${animal.index})">
-						
-                        <div class="card-body">
-                            <h5 class="card-title" data-toggle="modal" data-target="#exampleModal" onclick="lol(${animal.index})">${animal.name}</h5>
-							<button type="button" class="btn btn-danger" name="delete">Delete</button>
+		function generateCard(animal) {
+			return `
+				<div class="col-sm">
+					<div class="card" style="width: 18rem;">
+						<img src="${animal.image}" class="card-img-top" alt="picture of ${animal.name}" data-toggle="modal" data-target="#exampleModal" onclick="lol(${animal.index})">
+							<div class="card-body">
+								<h5 class="card-title" data-toggle="modal" data-target="#exampleModal" onclick="lol(${animal.index})">${animal.name}</h5>
+								<button type="button" class="btn btn-danger" name="delete">Delete</button>
 								<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
@@ -83,68 +104,73 @@
 										</div>
 									</div>
 								</div>
-						</div>
+							</div>
 					</div>
                 </div>
-            `;
-        }
+            `;}
+			
 		$(document).on('click','button[name=delete]',function(){
 				$(this).parents('.card').remove();
 			});
 			
-       function lol(index) {
-    var animal = animals.find(a => a.index === index);
-    var modalBody = document.getElementById("pop");
-    $("#save").hide();
-    modalBody.innerHTML = `
-        <p>Name: ${animal.name}</p>
-        <p>Gender: ${animal.gender}</p>
-        <p>Age: ${animal.age}</p>
-        <p>Type: ${animal.type}</p>
-        <p>Breed: ${animal.breed}</p>`;
+		$(document).on('click','button[name=delete1]',function(){
+				$(this).parents('.list-group-item').remove();
+			});
+	
+		
+		
+		function lol(index) {
+			var animal = animals.find(a => a.index === index);
+			var modalBody = document.getElementById("pop");
+			$("#save").hide();
+			modalBody.innerHTML = `
+				<p>Name: ${animal.name}</p>
+				<p>Gender: ${animal.gender}</p>
+				<p>Age: ${animal.age}</p>
+				<p>Type: ${animal.type}</p>
+				<p>Breed: ${animal.breed}</p>`;
     
-    document.getElementById("ji").addEventListener("click", function() {
-        window.location.href = `detail.html?index=${animal.index}`;
-    });
-
-    $(document).off('click', 'button[name=edit]').on('click', 'button[name=edit]', function() {
-        $("#save").show();
-        modalBody.innerHTML = `
-            <p>Name: <textarea id="aname">${animal.name}</textarea></p>
-            <p>Gender: <textarea id="agender">${animal.gender}</textarea></p>
-            <p>Age: <textarea id="aage">${animal.age}</textarea></p>
-            <p>Type: <textarea id="atype">${animal.type}</textarea></p>
-            <p>Breed: <textarea id="abreed">${animal.breed}</textarea></p>`;
+		document.getElementById("ji").addEventListener("click", function() {
+			window.location.href = `detail.html?index=${animal.index}`;
+		});
+	
+		$(document).off('click', 'button[name=edit]').on('click', 'button[name=edit]', function() {
+			$("#save").show();
+			modalBody.innerHTML = `
+				<p>Name: <textarea id="aname">${animal.name}</textarea></p>
+				<p>Gender: <textarea id="agender">${animal.gender}</textarea></p>
+				<p>Age: <textarea id="aage">${animal.age}</textarea></p>
+				<p>Type: <textarea id="atype">${animal.type}</textarea></p>
+				<p>Breed: <textarea id="abreed">${animal.breed}</textarea></p>`;
         
-        document.getElementById("aname").value = animal.name;
-        document.getElementById("agender").value = animal.gender;
-        document.getElementById("aage").value = animal.age;
-        document.getElementById("atype").value = animal.type;
-        document.getElementById("abreed").value = animal.breed;
-    });
+			document.getElementById("aname").value = animal.name;
+			document.getElementById("agender").value = animal.gender;
+			document.getElementById("aage").value = animal.age;
+			document.getElementById("atype").value = animal.type;
+			document.getElementById("abreed").value = animal.breed;
+		});
 
-    $(document).off('click', '#save').on('click', '#save', function() {
-		$("#save").hide();
-        var newname = document.getElementById("aname").value;
-        var newgender = document.getElementById("agender").value;
-        var newage = document.getElementById("aage").value;
-        var newtype = document.getElementById("atype").value;
-        var newbreed = document.getElementById("abreed").value;
+		$(document).off('click', '#save').on('click', '#save', function() {
+			$("#save").hide();
+			var newname = document.getElementById("aname").value;
+			var newgender = document.getElementById("agender").value;
+			var newage = document.getElementById("aage").value;
+			var newtype = document.getElementById("atype").value;
+			var newbreed = document.getElementById("abreed").value;
 
-        animal.name = newname;
-        animal.gender = newgender;
-        animal.age = newage;
-        animal.type = newtype;
-        animal.breed = newbreed;
+			animal.name = newname;
+			animal.gender = newgender;
+			animal.age = newage;
+			animal.type = newtype;
+			animal.breed = newbreed;
 
-        modalBody.innerHTML = `
-            <p>Name: ${animal.name}</p>
-            <p>Gender: ${animal.gender}</p>
-            <p>Age: ${animal.age}</p>
-            <p>Type: ${animal.type}</p>
-            <p>Breed: ${animal.breed}</p>`;
-    });
-}
+			modalBody.innerHTML = `
+				<p>Name: ${animal.name}</p>
+				<p>Gender: ${animal.gender}</p>
+				<p>Age: ${animal.age}</p>
+				<p>Type: ${animal.type}</p>
+				<p>Breed: ${animal.breed}</p>`;
+		});}
 
 	   
         function generateAnimalCards() {
@@ -157,19 +183,81 @@
 		}
 		
 		let loadMoreButton = document.createElement('button');
-			loadMoreButton.classList.add('btn');
-			loadMoreButton.classList.add('btn-secondary');
-			loadMoreButton.innerText = 'Load More';
-			loadMoreButton.addEventListener('click',function(){
+		loadMoreButton.classList.add('btn');
+		loadMoreButton.classList.add('btn-secondary');
+		loadMoreButton.innerText = 'Load More';
+		
+		loadMoreButton.addEventListener('click',function(){
 			console.log('clicked');
 			start+=3;
 			generateAnimalCards();
 		});
+		
+		$(document).on('click', '#btn-pet-add', function() {
+			let li = document.createElement('li');
+			let name = $('#bname').val();
+			let gender = $('#bgender').val();
+			let age = $('#bage').val();
+			let type = $('#btype').val();
+			let breed = $('#bbreed').val();
+			
+			li.innerHTML = `
+				<p>Name: ${name}</p>
+				<p>Gender: ${gender}</p>
+				<p>Age: ${age}</p>
+				<p>Type: ${type}</p>
+				<p>Breed: ${breed}</p>
+				<button type="button" class="btn btn-danger" name="delete1">Delete</button>
+				<button type="button" class="btn btn-primary" name="edit1">Edit</button>
+				<button type="button" class="btn btn-primary" id="save1">Save Change</button>`;
+				
+			console.log(li.innerText);
+			li.setAttribute('class','list-group-item');
+			$('#addPetModal').modal('hide');
+			$('#list').append(li);
+			$("#save1").hide();
+		});
+
+		$(document).on('click', 'button[name=edit1]', function() {
+			let listItem = $(this).closest('.list-group-item');
+			let name = listItem.find('p:eq(0)').text().split(': ')[1];
+			let gender = listItem.find('p:eq(1)').text().split(': ')[1];
+			let age = listItem.find('p:eq(2)').text().split(': ')[1];
+			let type = listItem.find('p:eq(3)').text().split(': ')[1];
+			let breed = listItem.find('p:eq(4)').text().split(': ')[1];
+
+			listItem.html(`
+				<p>Name: <textarea class="form-control">${name}</textarea></p>
+				<p>Gender: <textarea class="form-control">${gender}</textarea></p>
+				<p>Age: <textarea class="form-control">${age}</textarea></p>
+				<p>Type: <textarea class="form-control">${type}</textarea></p>
+				<p>Breed: <textarea class="form-control">${breed}</textarea></p>
+				<button type="button" class="btn btn-danger" name="delete1">Delete</button>
+			<button type="button" class="btn btn-primary" name="save1">Save</button>
+			`);
+		});
+
+		$(document).on('click', 'button[name=save1]', function() {
+			let listItem = $(this).closest('.list-group-item');
+			let name = listItem.find('textarea:eq(0)').val();
+			let gender = listItem.find('textarea:eq(1)').val();
+			let age = listItem.find('textarea:eq(2)').val();
+			let type = listItem.find('textarea:eq(3)').val();
+			let breed = listItem.find('textarea:eq(4)').val();
+
+			listItem.html(`
+				<p>Name: ${name}</p>
+				<p>Gender: ${gender}</p>
+				<p>Age: ${age}</p>
+				<p>Type: ${type}</p>
+				<p>Breed: ${breed}</p>
+				<button type="button" class="btn btn-danger" name="delete1">Delete</button>
+				<button type="button" class="btn btn-primary" name="edit1">Edit</button>
+			`);
+		});
+		
 		document.querySelector('#actions').append(loadMoreButton);
-		
         window.onload = generateAnimalCards;
-		
     </script>
-	
 </body>
 </html>
