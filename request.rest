@@ -1,0 +1,13 @@
+GET https://jsonblob.com/api/1211710305620320256
+### POST REQUEST
+POST https://jsonblob.com/api/jsonBlob
+content-type: application/json
+{}
+### PUT REQUEST
+PUT https://jsonblob.com/api/jsonBlob/1211710305620320256
+content-type: application/json
+{
+"hello":{"world"}
+}
+### DELETE REQUEST
+DELETE https://jsonblob.com/api/jsonBlob/1211710305620320256

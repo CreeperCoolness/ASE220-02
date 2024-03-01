@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Home</title>
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		
+	</head>
+	<body>
+		
+		<div class="container mt-5" id="animalCardsContainer">
+			<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#addPetModal" name="add" >Add Pet</button>
+			<ul id="list" class="list-group"></ul>
+		</div>
+		<div class="modal fade" id="addPetModal" tabindex="-1" role="dialog" aria-labelledby="addPetModal" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Pet Info</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Name: <textarea class="form-control" id="bname"></textarea></p>
+						<p>Gender: <textarea class="form-control" id="bgender"></textarea></p>
+						<p>Age: <textarea class="form-control" id="bage"></textarea></p>
+						<p>Type: <textarea class="form-control" id="btype"></textarea></p>
+						<p>Breed: <textarea class="form-control" id="bbreed"></textarea></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button id="btn-pet-add" type="button" class="btn btn-primary">Add Pet</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	<div  class="container" id="actions"></div>
+
+    <script>
+
+		var start = 0;
+		var end = 3;
+		
+		window.addEventListener('load', function() {
+			fetch('https://jsonblob.com/api/jsonBlob/1211710305620320256')
+			.then(response => response.json())
+			.then(data => {
+				animals = data;
+				generateAnimalCards();
+			})
+			.catch(error => {
+				console.error('Error fetching data:', error);
+			});
+		});
+
+
+		
+			
+		function generateCard(animal) {
+			return `
+				<div class="col-sm">
+					<div class="card" style="width: 18rem;">
+						<img src="${animal.image}" class="card-img-top" alt="picture of ${animal.name}" data-toggle="modal" data-target="#exampleModal" onclick="lol(${animal.index})">
+							<div class="card-body">
+								<h5 class="card-title" data-toggle="modal" data-target="#exampleModal" onclick="lol(${animal.index})">${animal.name}</h5>
+								<button type="button" class="btn btn-danger" name="delete">Delete</button>
+								<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="exampleModalLabel">Pet Info</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body" id="pop">
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+												<button type="button" class="btn btn-primary" id="ji">More Pet Info</button>
+												<button type="button" class="btn btn-primary" name="edit">Edit</button>
+												<button type="button" class="btn btn-primary" id="save">Save Change</button>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+					</div>
+                </div>
+            `;}
+			
+		$(document).on('click', 'button[name=delete]', function() {
+    var index = $(this).closest('.card').find('.card-img-top').attr('onclick').match(/\d+/)[0];
+    console.log("Index of the animal to be deleted:", index);
+
+    // Remove the pet from the page
+    $(this).closest('.col-sm').remove();
+
+    // Remove the pet from the data structure
+    var indexToRemove = animals.findIndex(animal => animal.index == index);
+    if (indexToRemove !== -1) {
+        animals.splice(indexToRemove, 1);
+    }
+
+    // Update the JSONblob document
+    fetch('https://jsonblob.com/api/jsonBlob/1211710305620320256', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(animals), // Update JSON data with the modified animals array
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating data:', error);
+    });
+});
+
+
+			
+		$(document).on('click', 'button[name=delete1]', function() {
+    var name = $(this).siblings('p:eq(0)').text().split(': ')[1];
+	console.log(name);
+    // Remove the pet from the page
+    $(this).closest('.list-group-item').remove();
+
+    // Find the index of the animal to be deleted
+    var indexToRemove = animals.findIndex(animal => animal.name === name);
+    if (indexToRemove !== -1) {
+        // Remove the pet from the data structure
+        animals.splice(indexToRemove, 1);
+
+        // Update the JSONblob document
+        fetch('https://jsonblob.com/api/jsonBlob/1211710305620320256', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(animals), // Update JSON data with the modified animals array
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data updated successfully:', data);
+        })
+        .catch(error => {
+            console.error('Error updating data:', error);
+        });
+    } else {
+        console.error('Animal not found in the data structure.');
+    }
+});
+
+
+
+
+	
+		
+		
+		function lol(index) {
+			var animal = animals.find(a => a.index === index);
+			var modalBody = document.getElementById("pop");
+			$("#save").hide();
+			modalBody.innerHTML = `
+				<p>Name: ${animal.name}</p>
+				<p>Gender: ${animal.gender}</p>
+				<p>Age: ${animal.age}</p>
+				<p>Type: ${animal.type}</p>
+				<p>Breed: ${animal.breed}</p>`;
+    
+		document.getElementById("ji").addEventListener("click", function() {
+			window.location.href = `detail.html?index=${animal.index}`;
+		});
+	
+		$(document).off('click', 'button[name=edit]').on('click', 'button[name=edit]', function() {
+			$("#save").show();
+			modalBody.innerHTML = `
+				<p>Name: <textarea id="aname">${animal.name}</textarea></p>
+				<p>Gender: <textarea id="agender">${animal.gender}</textarea></p>
+				<p>Age: <textarea id="aage">${animal.age}</textarea></p>
+				<p>Type: <textarea id="atype">${animal.type}</textarea></p>
+				<p>Breed: <textarea id="abreed">${animal.breed}</textarea></p>`;
+        
+			document.getElementById("aname").value = animal.name;
+			document.getElementById("agender").value = animal.gender;
+			document.getElementById("aage").value = animal.age;
+			document.getElementById("atype").value = animal.type;
+			document.getElementById("abreed").value = animal.breed;
+		});
+
+		$(document).off('click', '#save').on('click', '#save', function() {
+    $("#save").hide();
+    var newname = document.getElementById("aname").value;
+    var newgender = document.getElementById("agender").value;
+    var newage = document.getElementById("aage").value;
+    var newtype = document.getElementById("atype").value;
+    var newbreed = document.getElementById("abreed").value;
+
+    animal.name = newname;
+    animal.gender = newgender;
+    animal.age = newage;
+    animal.type = newtype;
+    animal.breed = newbreed;
+
+    var modalBody = document.getElementById("pop");
+    modalBody.innerHTML = `
+        <p>Name: ${animal.name}</p>
+        <p>Gender: ${animal.gender}</p>
+        <p>Age: ${animal.age}</p>
+        <p>Type: ${animal.type}</p>
+        <p>Breed: ${animal.breed}</p>`;
+
+    
+    fetch('https://jsonblob.com/api/jsonBlob/1211710305620320256', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(animals),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating data:', error);
+    });
+});
+;}
+
+	   
+        function generateAnimalCards() {
+    var container = document.getElementById("animalCardsContainer");
+    
+    var row;
+
+    for (let i = start; i < Math.min(start + end, animals.length); i++) {
+        if (i % 3 === 0) {
+            // Start a new row for every 3 cards
+            row = document.createElement('div');
+            row.classList.add('row');
+            container.appendChild(row);
+        }
+
+        var animalCardHTML = generateCard(animals[i]);
+        var col = document.createElement('div');
+        col.classList.add('col-sm');
+        col.innerHTML = animalCardHTML;
+        row.appendChild(col);
+    }
+
+    if (start + end > animals.length) loadMoreButton.hidden = true;
+}
+
+		
+		let loadMoreButton = document.createElement('button');
+		loadMoreButton.classList.add('btn');
+		loadMoreButton.classList.add('btn-secondary');
+		loadMoreButton.innerText = 'Load More';
+		
+		loadMoreButton.addEventListener('click',function(){
+			console.log('clicked');
+			start+=3;
+			generateAnimalCards();
+		});
+		
+		$(document).on('click', '#btn-pet-add', function() {
+    let li = document.createElement('li');
+    let name = $('#bname').val();
+    let gender = $('#bgender').val();
+    let age = $('#bage').val();
+    let type = $('#btype').val();
+    let breed = $('#bbreed').val();
+	let newIndex = animals.length > 0 ? animals[animals.length - 1].index + 1 : 1;
+
+   
+    let newPet = {
+        name: name,
+        gender: gender,
+        age: age,
+        breed: breed,
+		type: type,
+		index: newIndex
+    };
+    animals.push(newPet);
+
+    
+    li.innerHTML = `
+        <p>Name: ${name}</p>
+        <p>Gender: ${gender}</p>
+        <p>Age: ${age}</p>
+        <p>Type: ${type}</p>
+        <p>Breed: ${breed}</p>
+        <button type="button" class="btn btn-danger" name="delete1">Delete</button>
+        <button type="button" class="btn btn-primary" name="edit1">Edit</button>
+        <button type="button" class="btn btn-primary" id="save1">Save Change</button>`;
+
+    li.setAttribute('class', 'list-group-item');
+    $('#addPetModal').modal('hide');
+    $('#list').append(li);
+    $("#save1").hide();
+
+    fetch('https://jsonblob.com/api/jsonBlob/1211710305620320256', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(animals),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating data:', error);
+    });
+});
+
+
+		$(document).on('click', 'button[name=edit1]', function() {
+    let listItem = $(this).closest('.list-group-item');
+    let name = listItem.find('p:eq(0)').text().split(': ')[1];
+    let gender = listItem.find('p:eq(1)').text().split(': ')[1];
+    let age = listItem.find('p:eq(2)').text().split(': ')[1];
+    let type = listItem.find('p:eq(3)').text().split(': ')[1];
+    let breed = listItem.find('p:eq(4)').text().split(': ')[1];
+
+    listItem.html(`
+        <p>Name: <textarea class="form-control">${name}</textarea></p>
+        <p>Gender: <textarea class="form-control">${gender}</textarea></p>
+        <p>Age: <textarea class="form-control">${age}</textarea></p>
+        <p>Type: <textarea class="form-control">${type}</textarea></p>
+        <p>Breed: <textarea class="form-control">${breed}</textarea></p>
+        <button type="button" class="btn btn-danger" name="delete1">Delete</button>
+        <button type="button" class="btn btn-primary" name="save1">Save</button>
+    `);
+});
+
+$(document).on('click', 'button[name=save1]', function() {
+    let listItem = $(this).closest('.list-group-item');
+    let name = listItem.find('textarea:eq(0)').val();
+    let gender = listItem.find('textarea:eq(1)').val();
+    let age = listItem.find('textarea:eq(2)').val();
+    let type = listItem.find('textarea:eq(3)').val();
+    let breed = listItem.find('textarea:eq(4)').val();
+
+    let index = animals.findIndex(animal => animal.name === name);
+    if (index !== -1) {
+        animals[index].name = name;
+        animals[index].gender = gender;
+        animals[index].age = age;
+        animals[index].type = type;
+        animals[index].breed = breed;
+
+        fetch('https://jsonblob.com/api/jsonBlob/1211710305620320256', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(animals),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data updated successfully:', data);
+        })
+        .catch(error => {
+            console.error('Error updating data:', error);
+        });
+
+        listItem.html(`
+            <p>Name: ${name}</p>
+            <p>Gender: ${gender}</p>
+            <p>Age: ${age}</p>
+            <p>Type: ${type}</p>
+            <p>Breed: ${breed}</p>
+            <button type="button" class="btn btn-danger" name="delete1">Delete</button>
+            <button type="button" class="btn btn-primary" name="edit1">Edit</button>
+        `);
+    } else {
+        console.error('Animal not found in the data structure.');
+    }
+});
+
+
+		
+		document.querySelector('#actions').append(loadMoreButton);
+        window.onload = generateAnimalCards;
+		
+    </script>
+</body>
+</html>
